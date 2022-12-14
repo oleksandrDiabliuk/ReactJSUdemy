@@ -35,7 +35,8 @@ class App extends Component {
                     like: false,
                     id: 3
                 },
-            ]
+            ],
+            term: ''
         }
     }
 
@@ -79,21 +80,37 @@ class App extends Component {
         }))
     }
 
+    searchEmployee = (items, term) => {
+        if (term.length === 0) {
+            return items;
+        }
+
+        return items.filter(item => {
+            return item.name.indexOf(term) > -1;
+        })
+    }
+
+    onUpdateSearch = (term) => {
+        this.setState({term});
+    }
+
     render() {
+        const { data, term } = this.state;
         const employeesCount = this.state.data.length;
-        const employeeIncreaseCount = this.state.data.filter(item => item.increase).length; 
+        const employeeIncreaseCount = this.state.data.filter(item => item.increase).length;
+        const visibleData = this.searchEmployee(data, term); 
 
         return (
             <div className="app">
                 <AppInfo employeeCount={employeesCount} employeeIncreaseCount={employeeIncreaseCount}/>
     
                 <div className="search-panel">
-                    <SearchPanel/>
+                    <SearchPanel onUpdateSearch={this.onUpdateSearch}/>
                     <AppFilter/>
                 </div>
     
                 <EmployeesList 
-                    data={this.state.data} 
+                    data={visibleData} 
                     onDelete={this.deleteItem}
                     onToggleProp={this.onToggleProp}
                 />
