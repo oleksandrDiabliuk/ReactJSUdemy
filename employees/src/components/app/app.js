@@ -85,8 +85,6 @@ class App extends Component {
         if (value.includes('$')) {
             value = value.replace('$', '');
         }
-
-        console.log(value)
         
         this.setState(({data}) => ({
             data: data.map(item => {
