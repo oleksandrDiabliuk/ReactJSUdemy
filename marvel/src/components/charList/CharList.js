@@ -16,10 +16,21 @@ class CharList extends Component {
         charEnded: false
     }
 
+    itemRefs = []; 
+
     marvelService = new MarvelService();
 
+    setCharacterRef = (elem) => {
+        this.itemRefs.push(elem);
+    }
+
+    setActiveElement = (i) => {
+        this.itemRefs.forEach(item => item.classList.remove('char__item_selected'));
+        this.itemRefs[i].classList.add('char__item_selected');
+    }
+
     renderItems(arr) {
-        const items = arr.map(item => {
+        const items = arr.map((item, i) => {
             let imgStyle = {'objectFit' : 'cover'};
     
             if (item.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
@@ -28,9 +39,13 @@ class CharList extends Component {
             
             return (
                 <li 
+                    ref={this.setCharacterRef}
                     className="char__item" 
                     key={item.id}
-                    onClick={() => this.props.onCharSelected(item.id)}
+                    onClick={() => {
+                        this.props.onCharSelected(item.id);
+                        this.setActiveElement(i);
+                    }}
                 >
                     <img src={item.thumbnail} alt="abyss" style={imgStyle}/>
                     <div className="char__name">{item.name}</div>
