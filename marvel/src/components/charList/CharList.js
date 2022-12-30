@@ -77,7 +77,7 @@ const CharList = (props) => {
             //     style={{ overflow: 'none', height: 'auto' }}
             // >
                 <ul className="char__grid">
-                        {items}
+                    {items}
                 </ul>
             // </InfiniteScroll>
         );
