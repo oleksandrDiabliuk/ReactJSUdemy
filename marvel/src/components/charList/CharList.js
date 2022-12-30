@@ -43,7 +43,6 @@ const CharList = (props) => {
     const setActiveElement = (i) => {
         itemRefs.current.forEach(item => item.classList.remove('char__item_selected'));
         itemRefs.current[i].classList.add('char__item_selected');
-        itemRefs.current.focus();
     }
 
     function renderItems (arr) {
