@@ -29,14 +29,14 @@ const SingleComicPage = () => {
         setComic(comic);
     }
 
-    // const skeleton = comic || loading || error ? null : <Skeleton/>
+    const skeleton = comic || loading || error ? null : <Skeleton/>
     const errorMessage = error ? <ErrorMessage/> : null;
     const spinner = loading ? <Spinner/> : null;
     const content = !(loading || error || !comic) ? <View comic={comic}/> : null;
 
     return (
         <>
-            {/* {skeleton} */}
+            {skeleton}
             {errorMessage}
             {spinner}
             {content}
