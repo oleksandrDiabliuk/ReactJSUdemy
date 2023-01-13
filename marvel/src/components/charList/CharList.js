@@ -3,6 +3,7 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
 import useMarvelService from '../../services/MarvelService';
 // import InfiniteScroll from 'react-infinite-scroll-component';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import PropTypes from 'prop-types';
 import './charList.scss';
 
@@ -54,18 +55,20 @@ const CharList = (props) => {
             }
             
             return (
-                <li 
-                    ref={el => itemRefs.current[i] = el}
-                    className="char__item" 
-                    key={item.id}
-                    onClick={() => {
-                        props.onCharSelected(item.id);
-                        setActiveElement(i);
-                    }}
-                >
-                    <img src={item.thumbnail} alt="abyss" style={imgStyle}/>
-                    <div className="char__name">{item.name}</div>
-                </li>
+                <CSSTransition key={item.id} timeout={500} classNames="char__item">
+                    <li 
+                        ref={el => itemRefs.current[i] = el}
+                        className="char__item" 
+                        key={item.id}
+                        onClick={() => {
+                            props.onCharSelected(item.id);
+                            setActiveElement(i);
+                        }}
+                    >
+                        <img src={item.thumbnail} alt="abyss" style={imgStyle}/>
+                        <div className="char__name">{item.name}</div>
+                    </li>
+                </CSSTransition>
             );
         });   
         
@@ -77,7 +80,9 @@ const CharList = (props) => {
             //     style={{ overflow: 'none', height: 'auto' }}
             // >
                 <ul className="char__grid">
-                    {items}
+                    <TransitionGroup className="char__grid">
+                        {items}
+                    </TransitionGroup>
                 </ul>
             // </InfiniteScroll>
         );
