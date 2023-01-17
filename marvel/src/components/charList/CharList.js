@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -61,6 +61,7 @@ const CharList = (props) => {
     const setActiveElement = (i) => {
         itemRefs.current.forEach(item => item.classList.remove('char__item_selected'));
         itemRefs.current[i].classList.add('char__item_selected');
+        itemRefs.current[i].focus();
     }
 
     function renderItems (arr) {
@@ -105,9 +106,13 @@ const CharList = (props) => {
         );
     }
 
+    const elements = useMemo(() => {
+        return setContent(process, () => renderItems(charList), newItemLoading);
+    }, [process])
+
     return (
         <div className="char__list">
-            {setContent(process, () => renderItems(charList), newItemLoading)}
+            {elements}
             <button 
                 className="button button__main button__long"
                 disabled={newItemLoading}
