@@ -10,9 +10,11 @@ import './charSearchForm.scss';
 const CharSearchForm = () => {
     const [char, setChar] = useState(null);
 
-    const {getCharacterByName, process, setProcess} = useMarvelService();
+    const {getCharacterByName, clearError, process, setProcess} = useMarvelService();
 
     const updateChar = (name) => {
+        clearError();
+
         getCharacterByName(name)
             .then(onCharLoaded)
             .then(() => setProcess('confirmed'))
