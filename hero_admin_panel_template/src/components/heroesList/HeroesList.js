@@ -1,11 +1,9 @@
-import {useHttp} from '../../hooks/http.hook';
-import { useEffect, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { filteredHeroesSelector } from './heroesSlice';
+import { useCallback, useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
-import { heroDelete, fetchHeroes } from './heroesSlice';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
+import { useGetHeroesQuery, useDeleteHeroMutation } from '../../api/apiSlice';
 
 // Задача для этого компонента:
 // При клике на "крестик" идет удаление персонажа из общего состояния
@@ -13,27 +11,33 @@ import Spinner from '../spinner/Spinner';
 // Удаление идет и с json файла при помощи метода DELETE --- done
 
 const HeroesList = () => {
-    const filteredHeroes = useSelector(filteredHeroesSelector);
+    const {
+        data: heroes = [],
+        isLoading,
+        isError
+    } = useGetHeroesQuery();
 
-    const heroesLoadingStatus = useSelector(state => state.heroes.heroesLoadingStatus);
-    const dispatch = useDispatch();
-    const {request} = useHttp();
+    const [deleteHero] = useDeleteHeroMutation();
 
-    useEffect(() => {
-        dispatch(fetchHeroes());
+    const activeFilter = useSelector(state => state.filters.activeFilter);
 
-        // eslint-disable-next-line
-    }, []);
+    const filteredHeroes = useMemo(() => {
+        const filteredHeroes = heroes.slice();
+        
+        if (activeFilter === 'all') {
+            return filteredHeroes;
+        } else {
+            return filteredHeroes.filter(item => item.element === activeFilter)
+        }
+    }, [heroes, activeFilter])
 
     const onDelete = useCallback(id => {
-        request(`http://localhost:3001/heroes/${id}`, 'DELETE')
-            .then(dispatch(heroDelete(id)))
-            .catch(error => console.log(error))
-    }, [request])
+        deleteHero(id);
+    }, [])
 
-    if (heroesLoadingStatus === "loading") {
+    if (isLoading) {
         return <Spinner/>;
-    } else if (heroesLoadingStatus === "error") {
+    } else if (isError) {
         return <h5 className="text-center mt-5">Ошибка загрузки</h5>
     }
 

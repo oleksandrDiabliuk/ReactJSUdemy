@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import store from '../../store';
 
 import { selectAll } from '../heroesFilters/filtersSlice';
-import { heroCreate } from '../heroesList/heroesSlice';
+import { useCreateHeroMutation } from '../../api/apiSlice';
 // Задача для этого компонента:
 // Реализовать создание нового героя с введенными данными. Он должен попадать
 // в общее состояние и отображаться в списке + фильтроваться
@@ -21,10 +21,9 @@ const HeroesAddForm = () => {
     const [heroDescr, setHeroDescr] = useState('');
     const [heroElement, setHeroElement] = useState('');
 
+    const [createHero, {isLoading}] = useCreateHeroMutation();
     const {filterLoadingStatus} = useSelector(state => state.filters);
     const filters = selectAll(store.getState());
-    const dispatch = useDispatch();
-    const {request} = useHttp();
 
     const onSubmitForm = (e) => {
         e.preventDefault();
@@ -36,9 +35,7 @@ const HeroesAddForm = () => {
             element: heroElement
         }
 
-        request("http://localhost:3001/heroes/", "POST", JSON.stringify(newHero))
-            .then(dispatch(heroCreate(newHero)))
-            .catch(error => console.log(error))
+        createHero(newHero).unwrap();
 
         setHeroName('');
         setHeroDescr('');
